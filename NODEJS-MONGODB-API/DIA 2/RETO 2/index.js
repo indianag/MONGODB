@@ -146,29 +146,80 @@ const student4 = new Student({
 // })  
 
 
-//consulta para mostrar las asignaturas de un alumno
 Student.findOne({ firstName: 'Camila' })
-.then(function(student){
-    if(student){
-        if (student.marks.length > 0) {
-            const subjectTitles = student.marks[0].subject.title;
-            console.log(subjectTitles);
-          } else {
-            console.log('El estudiante no tiene asignaturas registradas.');
-          }
-        } else {
-          console.log('Estudiante no encontrado');
-        }
-    
-        // Desconectar de la base de datos después de imprimir los títulos
-        mongoose.disconnect();
-      })
-      .catch(function (error) {
-        console.error('Error al buscar al estudiante:', error);
-        mongoose.disconnect();
-      });
+  .then(function (student) {
+    if (student) {
+      if (student.marks.length > 0) {
+        // Obtener todos los títulos de asignaturas
+        const subjectTitles = student.marks.map(mark => mark.subject.title);
+        console.log(`Asignaturas de ${student.firstName}:`, subjectTitles);
+      } else {
+        console.log('El estudiante no tiene asignaturas registradas.');
+      }
+    } else {
+      console.log('Estudiante no encontrado');
+    }
+  })
+  .catch(function (error) {
+    console.error('Error al buscar al estudiante:', error);
+  });
+
+
+
+Student.findOne({ firstName: 'Camila' })
+  .then(student => {
+    if (student) {
+      const teachersSet = new Set();
+
+      for (const mark of student.marks)
+        for (const teacher of mark.subject.teachers)
+          teachersSet.add(teacher);
+
+      const teachersArray = Array.from(teachersSet);
+      console.log(`Profesores de ${student.firstName}:`, teachersArray.map(teacher => `${teacher.firstName} ${teacher.lastName}`));
+    } else {
+      console.log('Estudiante no encontrado');
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
 
 
 
 
 app.listen(port, () => console.log('server listning on porto', port));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Array.from() es un método en JavaScript que crea una nueva 
+//instancia de un array a partir de un objeto iterable o de una estructura de array 
+//similar a un array (como un objeto de tipo Set o Map)
