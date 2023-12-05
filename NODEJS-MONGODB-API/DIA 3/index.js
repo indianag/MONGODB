@@ -109,17 +109,271 @@ const marksData = [
 },
 ];
 
-async function insertData() {
-    try {
-      await Teacher.insertMany(teachersData);
-      await Mark.insertMany(marksData);
-      console.log('Datos insertados correctamente.');
-    } catch (error) {
-      console.error(error);
-    }
-}
+// async function insertData() {
+//     try {
+//       await Teacher.insertMany(teachersData);
+//       await Mark.insertMany(marksData);
+//       console.log('Datos insertados correctamente.');
+//     } catch (error) {
+//       console.error(error);
+//     }
+// }
 
-insertData();
+// insertData();
+
+
+
+// //Calcular la nota media de los alumnos de una asignatura concreta.
+// Mark
+// .aggregate([{$group: {"_id": null, "Nota Media": {"$avg": "$mark"}}}])
+// .then((result) =>
+// {
+//     console.log(result);
+// })
+// .catch((error) =>
+// {
+//     console.log(error);
+// });
+
+// //Calcular el número total de alumnos que hay en el bootcamp incluyendo repetidos.
+// Mark
+// .aggregate([{$count: "Numero de Alumnos"}])
+// .then((result) =>
+// {
+//     console.log(result);
+// })
+// .catch((error) =>
+// {
+//     console.log(error);
+// });
+
+// //Listar el nombre y los apellidos de todos los alumnos incluyendo repetidos.
+// Mark
+// .aggregate([{
+//     $project: 
+//     {
+//         _id: 0,
+//         student_first_name: 1,
+//         student_last_name: 1, 
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+// //Listar el nombre y los apellidos de todos los profesores incluyendo repetidos.
+// Teacher
+// .aggregate([{
+//     $project: 
+//     {
+//         _id: 0,
+//         teacher_first_name: 1,
+//         teacher_last_name: 1, 
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+//Mostrar el número total de alumnos por grupo ordenados por grupo en orden inverso al alfabeto.
+// Mark
+// .aggregate([{$group: {_id: '$group_name', totalStudents: { $sum: 1 }, }, },
+//     {
+//       $sort:
+//       {
+//         _id: -1, // Ordena en orden inverso alfabético por group_name
+//       },
+//     },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+// //Obtén el top 5 de los nombres de las asignaturas cuya nota media sea mayor que 5.
+// Mark
+// .aggregate([
+// {
+//     $group: {
+//     _id: '$subject_name', // Agrupo por subject_name
+//     notaMedia: { $avg: '$mark' }, // Calculo la nota media para cada asignatura
+//     },
+// },
+// {
+//     $match: {
+//     notaMedia: { $gt: 5 }, // Filtro las asignaturas con nota media mayor que 5
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+//Calcular el numero de profesores que hay por cada asignatura incluyendo repetidos.
+// Mark
+// .aggregate([
+// {
+//     $group: {
+//     _id: '$subject_name',
+//     totalTeachers: { $sum: 1 },
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+// //Obtén el nombre, apellido y la nota de los alumnos que tengan una nota mayor de 8 o la nota
+// //tenga fecha del año pasado o anterior.
+// Mark
+// .aggregate([
+// {
+//     $match: {
+//     $or: [
+//         { mark: { $gt: 8 } }, // Nota mayor de 8
+//         { date: { $lt: new Date() } } // Nota con fecha del año pasado o anterior
+//     ]
+//     },
+// },
+// {
+//     $project: {
+//     _id: 0,
+//     student_first_name: 1, // Incluir el campo student_first_name
+//     student_last_name: 1, // Incluir el campo student_last_name
+//     mark: 1, // Incluir el campo mark
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+// //Obtén la media de las notas que se han dado en el último año por asignatura.
+// Mark
+// .aggregate([
+// {
+//     $match: {
+//     date: { $gte: new Date('2022-12-05'), $lt: new Date('2023-12-05') }, // Filtro las notas del último año
+//     },
+// },
+// {
+//     $group: {
+//     _id: '$subject_name', // Agrupo por asignatura
+//     notaMedia: { $avg: '$mark' }, // Calculo la media de las notas por asignatura
+//     },
+// },
+// {
+//     $project: {
+//     _id: 0, 
+//     subject_name: '$_id', // Renombro _id a subject_name
+//     notaMedia: 1, // Incluir el campo averageMark
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+
+// //Obtén la media aritmética de las notas que se han dado en el último año por nombre de alumno.
+// Mark
+// .aggregate([
+// {
+//     $match: {
+//     date: { $gte: new Date('2022-12-05'), $lt: new Date('2023-12-05') }, // Filtro notas del último año
+//     },
+// },
+// {
+//     $group: {
+//     _id: { student_first_name: '$student_first_name'}, // Agrupo por nombre del alumno
+//     notaMedia: { $avg: '$mark' }, // Calculo la media de las notas para cada alumno
+//     },
+// },
+// {
+//     $project: {
+//     _id: 0,
+//     student_first_name: '$_id.student_first_name', // mostrar el nombre del alumno 
+//     notaMedia: 1, // mostrar nota media
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+// //Obtén los nombres de los alumnos y la cantidad total de asignaturas por alumno cuyo profesor
+// //sea uno que elijáis.
+
+// Mark
+// .aggregate([
+// {
+//     $match: {
+//     "teachers.teacher_first_name": "Profesor1", //nombre del profe que elija
+//     },
+// },
+// {
+//     $group: {
+//     _id: {student_first_name: "$student_first_name"}, // Agrupo por nombre el alumno
+//     totalSubjects: { $sum: 1 }, // Cuento la cantidad total de asignaturas por alumno
+//     },
+// },
+// {
+//     $project: {
+//     _id: 0, 
+//     student_first_name: "$_id.student_first_name", // Extraigo el nombre del alumno
+//     totalSubjects: 1, // muestro el campo de las asignaturas por alumno
+//     },
+// },
+// ])
+// .then((result) => {
+//     console.log(result);
+// })
+// .catch((error) => {
+//     console.log(error);
+// });
+
+
+
+
+
+
+
+
+
+
+
 
 
 
